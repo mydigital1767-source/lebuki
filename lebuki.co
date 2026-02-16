@@ -1,0 +1,206 @@
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ShoppingBag, Globe } from "lucide-react";
+
+export default function LebukiStore() {
+  const [lang, setLang] = useState("ka");
+
+  const content = {
+    ka: {
+      brand: "Lebuki.co",
+      tagline: "ხელნაკეთი ელეგანტური ბროშები",
+      description:
+        "მინიმალისტური, დახვეწილი და უნიკალური ბროშები — შექმნილი იმისთვის, რომ შენი სტილი გამორჩეული გახდეს.",
+      buy: "ყიდვა",
+      addToCart: "კალათაში დამატება",
+      aboutTitle: "რატომ Lebuki",
+      aboutText:
+        "თითოეული ბროში მზადდება ხელით, სიყვარულითა და დეტალებზე განსაკუთრებული ყურადღებით. მცირე რაოდენობით წარმოება ნიშნავს ნამდვილ უნიკალურობას.",
+      delivery: "მიტანა მთელი საქართველოს მასშტაბით",
+      payment: "უსაფრთხო გადახდა",
+      footer: "© Lebuki.co — ყველა უფლება დაცულია"
+    },
+    en: {
+      brand: "Lebuki.co",
+      tagline: "Handmade Elegant Brooches",
+      description:
+        "Minimal, refined and unique brooches designed to elevate your personal style.",
+      buy: "Buy Now",
+      addToCart: "Add to Cart",
+      aboutTitle: "Why Lebuki",
+      aboutText:
+        "Each brooch is handmade with care and attention to detail. Limited production ensures true uniqueness.",
+      delivery: "Delivery across Georgia",
+      payment: "Secure payments",
+      footer: "© Lebuki.co — All rights reserved"
+    }
+  };
+
+  const t = content[lang];
+
+  const [openCheckout, setOpenCheckout] = useState(false);
+
+  const handleBuy = () => {
+    setOpenCheckout(true);
+  };
+
+  // --- TBC PAY CONFIG (replace URL after bank activation) ---
+  const TBC_PAYMENT_URL = "https://pay.tbcbank.ge/example-checkout";
+
+  const startTbcPayment = () => {
+    // here later we will send order data to backend
+    window.location.href = TBC_PAYMENT_URL;
+  };
+
+  return (
+    <div className="min-h-screen bg-[#f7f5f2] text-neutral-900 font-light">
+      {/* Header */}
+      <header className="flex justify-between items-center p-6 max-w-7xl mx-auto">
+        <h1 className="text-2xl tracking-[0.2em] uppercase">{t.brand}</h1>
+        <Button
+          variant="outline"
+          className="flex gap-2 rounded-full"
+          onClick={() => setLang(lang === "ka" ? "en" : "ka")}
+        >
+          <Globe size={16} /> {lang === "ka" ? "EN" : "KA"}
+        </Button>
+      </header>
+
+      {/* Luxury Hero */}
+      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+        <img
+          src="/brooch1.png"
+          className="absolute inset-0 w-full h-full object-cover scale-105"
+        />
+        <div className="absolute inset-0 bg-black/20" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative text-center text-white max-w-2xl px-6"
+        >
+          <h2 className="text-5xl md:text-6xl font-light leading-tight mb-6">
+            {t.tagline}
+          </h2>
+          <p className="text-lg opacity-90 mb-8">{t.description}</p>
+          <div className="mb-6 text-sm tracking-wide bg-white/20 backdrop-blur px-4 py-2 inline-block rounded-full">
+            ✨ Only few pieces available
+          </div>
+          <br />
+          <Button
+            size="lg"
+            className="rounded-full px-10 text-lg bg-white text-black hover:bg-neutral-200"
+            onClick={handleBuy}
+          >
+            <ShoppingBag className="mr-2" /> {t.buy}
+          </Button>
+        </motion.div>
+      </section>
+
+      {/* Product Section */}
+      <section className="max-w-7xl mx-auto px-6 py-20">
+        <div className="grid md:grid-cols-3 gap-10">
+          {[1, 2, 3].map((item) => (
+            <Card
+              key={item}
+              className="rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition group"
+            >
+              <CardContent className="p-0">
+                <div className="overflow-hidden">
+                  <img
+                    src="/brooch1.png"
+                    className="w-full h-[420px] object-cover group-hover:scale-110 transition duration-700"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-lg tracking-wide mb-2">Lebuki Brooch</h3>
+                  <p className="text-neutral-500 mb-4">30 GEL</p>
+                  <Button
+                    className="w-full rounded-full"
+                    onClick={handleBuy}
+                  >
+                    {t.addToCart}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* About */}
+      <section className="bg-white py-20">
+        <div className="max-w-3xl mx-auto text-center px-6">
+          <h3 className="text-4xl font-light mb-6">{t.aboutTitle}</h3>
+          <p className="text-neutral-600 text-lg leading-relaxed">
+            {t.aboutText}
+          </p>
+        </div>
+      </section>
+
+      {/* Sticky Buy Button (Mobile Conversion Booster) */}
+      <div className="fixed bottom-4 left-0 right-0 flex justify-center md:hidden">
+        <Button
+          size="lg"
+          className="rounded-full px-10 shadow-xl"
+          onClick={handleBuy}
+        >
+          {t.buy}
+        </Button>
+      </div>
+
+      {/* Checkout Modal */}
+      {openCheckout && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-8 relative">
+            <button
+              className="absolute top-4 right-4 text-neutral-400"
+              onClick={() => setOpenCheckout(false)}
+            >
+              ✕
+            </button>
+
+            <h3 className="text-2xl font-light mb-6 text-center">
+              {lang === "ka" ? "შეკვეთის გაფორმება" : "Checkout"}
+            </h3>
+
+            <form className="space-y-4">
+              <input
+                placeholder={lang === "ka" ? "სახელი" : "Name"}
+                className="w-full border rounded-xl p-3"
+              />
+              <input
+                placeholder={lang === "ka" ? "ტელეფონი" : "Phone"}
+                className="w-full border rounded-xl p-3"
+              />
+              <input
+                placeholder={lang === "ka" ? "მისამართი" : "Address"}
+                className="w-full border rounded-xl p-3"
+              />
+
+              <div className="pt-4 space-y-3">
+                <Button
+                  className="w-full rounded-full"
+                  onClick={startTbcPayment}
+                >
+                  💳 {lang === "ka" ? "TBC ბარათით გადახდა" : "Pay with TBC Card"}
+                </Button>
+                <Button variant="outline" className="w-full rounded-full">
+                  📩 {lang === "ka" ? "შეკვეთა Instagram-ზე" : "Order via Instagram"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer className="text-center text-sm text-neutral-500 py-10">
+        {t.footer}
+      </footer>
+    </div>
+  );
+}
